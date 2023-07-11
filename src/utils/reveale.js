@@ -20,15 +20,15 @@ const reveale = (arr, x, y, newSafe) => {
     show.push(arr[x][y]);
 
     while (show.length != 0) {
-        let one = show.pop();
-        let p = one.x;
-        let q = one.y;
-        if (!one.revealed) {
+        let top = show.pop();
+        let p = top.x;
+        let q = top.y;
+        if (!top.revealed) {
             newSafe--;
-            one.revealed = true;
-            one.flagged = false;
+            top.revealed = true;
+            top.flagged = false;
         }
-        if (one.value != 0) {
+        if (top.value != 0) {
             break;
         }
 

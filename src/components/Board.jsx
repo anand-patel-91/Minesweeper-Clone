@@ -27,7 +27,7 @@ const Board = () => {
 
     const updateFlag = (e, x, y) => {
         e.preventDefault()
-        if (gameOver || !safe) {
+        if (gameOver || !safe || grid[x][y].revealed) {
             return;
         }
         let newGrid = JSON.parse(JSON.stringify(grid))
