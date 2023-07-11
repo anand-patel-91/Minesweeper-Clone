@@ -27,6 +27,9 @@ const Board = () => {
 
     const updateFlag = (e, x, y) => {
         e.preventDefault()
+        if (gameOver || !safe) {
+            return;
+        }
         let newGrid = JSON.parse(JSON.stringify(grid))
         newGrid[x][y].flagged = !newGrid[x][y].flagged
         setGrid(newGrid)
@@ -50,13 +53,14 @@ const Board = () => {
             setGrid(revealedBoard.arr)
             setSafe(revealedBoard.newSafe)
             if (!revealedBoard.newSafe) {
-                alert("You Win")
+                setGameOver(true)
+                alert("Congrats you win!")
             }
         }
     }
 
     return (
-        <>
+        <div className='parent'>
             <h1>Minesweeper</h1>
             <div className='board-par'>
                 {grid.map(row => {
@@ -71,8 +75,8 @@ const Board = () => {
                     )
                 })}
             </div>
-            {(gameOver || !safe) && <div className='btn'><button onClick={freshBoard} >Play Again</button></div>}
-        </>
+            {(gameOver || !safe) && <button onClick={freshBoard} >Play Again</button>}
+        </div>
     )
 }
 

@@ -26,6 +26,7 @@ const reveale = (arr, x, y, newSafe) => {
         if (!one.revealed) {
             newSafe--;
             one.revealed = true;
+            one.flagged = false;
         }
         if (one.value != 0) {
             break;

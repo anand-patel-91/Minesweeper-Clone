@@ -1,23 +1,50 @@
+@import url('https://fonts.googleapis.com/css2?family=Ysabeau+SC:wght@400;700&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
 body {
     height: 1vh;
     user-select: none;
+    background-color: rgb(129, 128, 128);
+    background-image: url("./img/bomb.png");
+    background-size: 20%;
+    background-position-y: -20%;
+}
+
+.parent {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 50px;
+    align-items: center;
+}
+
+input {
+    padding: 5px;
+    font-size: 15px;
+    border: 1px solid black;
 }
 
 h1 {
+    color: whitesmoke;
+    font-family: 'Ysabeau SC', sans-serif;
     text-align: center;
 }
 
 .board-par {
     display: table;
     border-collapse: collapse;
-    width: 480px;
-    height: 480px;
-    margin: auto;
+    width: 400px;
+    height: 400px;
+    border: 3px solid black;
 }
 
 .board-row {
     display: table-row;
-    gap: 10px;
 }
 
 .cell {
@@ -25,8 +52,8 @@ h1 {
     display: table-cell;
     font-size: 20px;
     font-weight: bold;
-    width: 48px;
-    height: 48px;
+    width: 40px;
+    height: 40px;
     text-align: center;
     vertical-align: middle;
 }
@@ -36,7 +63,6 @@ h1 {
 }
 
 .cell.flagged {
-    background-color: blueviolet;
     background-image: url("./img/flag.png");
     background-size: cover;
     background-position: center;
@@ -50,13 +76,7 @@ h1 {
     background-color: red;
 }
 
-.btn {
-    margin-top: 15px;
-    display: flex;
-    justify-content: center;
-}
-
-.btn button {
+button {
     font-size: 20px;
     padding: 10px;
     border-radius: 5px;
