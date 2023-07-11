@@ -15,7 +15,7 @@ const Board = () => {
 
     const freshBoard = () => {
         const newBoard = CreateBoard(BoardSize, mines);
-        setGrid(newBoard.board); BoardSize
+        setGrid(newBoard.board);
         setMineLocation(newBoard.mineLocation)
         setSafe(BoardSize * BoardSize - mines)
         setGameOver(false)
