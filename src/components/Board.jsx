@@ -5,8 +5,8 @@ import reveale from '../utils/reveale';
 
 const Board = () => {
 
-    let BoardSize = 5;
-    let mines = 1;
+    let BoardSize = 10;
+    let mines = 20;
 
     const [grid, setGrid] = useState([])
     const [safe, setSafe] = useState(0)
