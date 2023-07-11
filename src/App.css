@@ -1,0 +1,66 @@
+body {
+    height: 1vh;
+    user-select: none;
+}
+
+h1 {
+    text-align: center;
+}
+
+.board-par {
+    display: table;
+    border-collapse: collapse;
+    width: 480px;
+    height: 480px;
+    margin: auto;
+}
+
+.board-row {
+    display: table-row;
+    gap: 10px;
+}
+
+.cell {
+    border: 1px solid black;
+    display: table-cell;
+    font-size: 20px;
+    font-weight: bold;
+    width: 48px;
+    height: 48px;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.cell {
+    background-color: lightgreen;
+}
+
+.cell.flagged {
+    background-color: blueviolet;
+    background-image: url("./img/flag.png");
+    background-size: cover;
+    background-position: center;
+}
+
+.cell.revealed {
+    background-color: burlywood;
+}
+
+.cell.revealed.bomb {
+    background-color: red;
+}
+
+.btn {
+    margin-top: 15px;
+    display: flex;
+    justify-content: center;
+}
+
+.btn button {
+    font-size: 20px;
+    padding: 10px;
+    border-radius: 5px;
+    color: white;
+    background-color: darkviolet;
+    border: 2px solid black;
+}
