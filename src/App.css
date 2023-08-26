@@ -31,6 +31,8 @@ input {
 }
 
 h1 {
+    padding-top: 1%;
+    font-size: 3rem;
     color: whitesmoke;
     font-family: 'Ysabeau SC', sans-serif;
     text-align: center;
