@@ -52,7 +52,6 @@ const Board = () => {
     }
 
     const revealCell = (x, y) => {
-        console.log(grid);
         if (gameOver || !safe || grid[x][y].revealed) {
             return;
         }
@@ -118,7 +117,7 @@ const Board = () => {
                     )
                 })}
             </div>
-            {(gameOver || !safe) && <button onClick={freshBoard} >Play Again</button>}
+            <button onClick={freshBoard} >{(gameOver || !safe) ? "Play Again" : "Reset"}</button>
         </div>
     )
 }
