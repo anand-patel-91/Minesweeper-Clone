@@ -56,7 +56,6 @@ const Board = ({ mineCount, onGameOver, onWin }) => {
     if (!newGrid[x][y].flagged) {
       flagSound.currentTime = 0;
       flagSound.play();
-      console.log("played flag sound");
     }
     newGrid[x][y].flagged = !newGrid[x][y].flagged;
     setGrid(newGrid);
@@ -126,9 +125,10 @@ const Board = ({ mineCount, onGameOver, onWin }) => {
       <div className="board-par">
         {grid.map((row, rowIndex) => (
           <div className="board-row" key={rowIndex}>
-            {row.map((cell) => {
+            {row.map((cell, cellIndex) => {
               return (
                 <Cell
+                  key={cellIndex}
                   details={cell}
                   updateFlag={updateFlag}
                   revealCell={revealCell}

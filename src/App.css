@@ -145,6 +145,7 @@ button {
   background-color: #1f2937b2;
   color: white;
   padding: 30px;
+  border: 2px solid black;
   border-radius: 10px;
 }
 
