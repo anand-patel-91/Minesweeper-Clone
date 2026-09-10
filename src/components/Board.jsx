@@ -22,6 +22,19 @@ const Board = ({ mineCount, onGameOver, onWin }) => {
   const [safe, setSafe] = useState(0);
   const [mineLocation, setMineLocation] = useState([]);
   const [gameOver, setGameOver] = useState(false);
+  const [elapsedTime, setElapsedTime] = useState(0);
+
+  useEffect(() => {
+    if (gameOver) {
+      return undefined;
+    }
+
+    const timerId = setInterval(() => {
+      setElapsedTime((currentTime) => currentTime + 1);
+    }, 1000);
+
+    return () => clearInterval(timerId);
+  }, [gameOver]);
 
   const freshBoard = () => {
     const newBoard = CreateBoard(BoardSize, mines);
@@ -108,7 +121,7 @@ const Board = ({ mineCount, onGameOver, onWin }) => {
         setGameOver(true);
         victorySound.currentTime = 0;
         victorySound.play();
-        onWin(); // Replaces alert
+        onWin(elapsedTime); // Replaces alert
       }
 
       firstClick.current = {
@@ -121,7 +134,19 @@ const Board = ({ mineCount, onGameOver, onWin }) => {
 
   return (
     <div className="parent">
-      <h1>Minesweeper</h1>
+      <div className="game-header">
+        <div>
+          <p className="eyebrow">Classic puzzle</p>
+          <h1>Minesweeper</h1>
+        </div>
+        <div className="timer" aria-live="polite">
+          <span className="timer-label">Time</span>
+          <span className="timer-value">
+            {String(Math.floor(elapsedTime / 60)).padStart(2, "0")}:
+            {String(elapsedTime % 60).padStart(2, "0")}
+          </span>
+        </div>
+      </div>
       <div className="board-par">
         {grid.map((row, rowIndex) => (
           <div className="board-row" key={rowIndex}>

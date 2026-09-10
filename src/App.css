@@ -1,5 +1,12 @@
 @import url("https://fonts.googleapis.com/css2?family=Ysabeau+SC:wght@400;700&display=swap");
 
+:root {
+  font-family: "Ysabeau SC", sans-serif;
+  color: #f7f5ef;
+  background: #20252b;
+  font-synthesis: none;
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -7,91 +14,142 @@
 }
 
 body {
-  height: 1vh;
+  min-height: 100vh;
   user-select: none;
-  background-color: rgb(129, 128, 128);
-  background-image: url("./img/bomb.png");
-  background-size: 20%;
-  background-position-y: -20%;
+  background: #20252b url("./img/bomb.png") no-repeat right -5rem top -4rem;
+  background-size: min(28rem, 45vw);
 }
 
 .parent {
-  margin-top: 8px;
+  min-height: 100vh;
+  padding: 3rem 1.25rem;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  gap: 50px;
+  gap: 2rem;
   align-items: center;
 }
 
-input {
-  padding: 5px;
-  font-size: 15px;
-  border: 1px solid black;
+.game-header {
+  width: min(100%, 34rem);
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 1rem;
 }
 
 h1 {
-  padding-top: 1%;
-  font-size: 3rem;
-  color: whitesmoke;
-  font-family: "Ysabeau SC", sans-serif;
-  text-align: center;
+  color: #f7f5ef;
+  font-size: clamp(2.2rem, 8vw, 3.5rem);
+  line-height: 0.9;
+  letter-spacing: 0.02em;
+}
+
+.eyebrow {
+  margin-bottom: 0.65rem;
+  color: #f4b942;
+  font-size: 0.75rem;
+  font-weight: bold;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.timer {
+  min-width: 6.5rem;
+  padding: 0.65rem 0.9rem;
+  border: 1px solid #ffffff2b;
+  border-radius: 0.6rem;
+  background: #11161dcc;
+  box-shadow: 0 0.75rem 2rem #00000026;
+  text-align: right;
+}
+
+.timer-label {
+  display: block;
+  color: #aeb6bf;
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.timer-value {
+  display: block;
+  color: #f4b942;
+  font-size: 1.8rem;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
 }
 
 .board-par {
-  display: table;
-  border-collapse: collapse;
-  width: 400px;
-  height: 400px;
-  border: 3px solid black;
+  display: grid;
+  grid-template-rows: repeat(10, 1fr);
+  width: min(88vw, 34rem);
+  aspect-ratio: 1;
+  padding: 0.45rem;
+  border: 1px solid #ffffff2b;
+  border-radius: 0.85rem;
+  background: #11161d;
+  box-shadow: 0 1.5rem 3rem #00000040, inset 0 0 0 1px #00000080;
 }
 
 .board-row {
-  display: table-row;
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
 }
 
 .cell {
-  border: 1px solid black;
-  display: table-cell;
-  font-size: 20px;
+  display: grid;
+  place-items: center;
+  border: 1px solid #1d252d;
+  background: #59666f;
+  color: #f7f5ef;
+  cursor: pointer;
+  font-size: clamp(0.85rem, 3vw, 1.25rem);
   font-weight: bold;
-  width: 40px;
-  height: 40px;
-  text-align: center;
-  vertical-align: middle;
+  transition: background-color 120ms ease, transform 120ms ease;
 }
 
-.cell {
-  background-color: lightgreen;
+.cell:hover {
+  background: #71808b;
+  transform: scale(0.94);
 }
 
 .cell.flagged {
-  background-image: url("./img/flag.png");
-  background-size: cover;
-  background-position: center;
+  background: #405c5a url("./img/flag.png") center / 70% no-repeat;
 }
 
 .cell.revealed {
-  background-color: burlywood;
+  background: #d7c6a5;
+  color: #28313a;
+  cursor: default;
 }
 
 .cell.revealed.bomb {
-  background-color: red;
+  background: #d95d50;
+  color: #fff;
 }
 
 button {
-  font-size: 20px;
-  padding: 5px;
-  border-radius: 5px;
-  color: white;
-  background-color: darkviolet;
-  border: 2px solid black;
+  border: 0;
+  border-radius: 0.45rem;
+  color: #172027;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: bold;
+  padding: 0.7rem 1.1rem;
+  transition: transform 120ms ease, filter 120ms ease;
+}
+
+button:hover {
+  filter: brightness(1.08);
+  transform: translateY(-2px);
 }
 
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: #11161dbd;
+  backdrop-filter: blur(5px);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -99,9 +157,11 @@ button {
 }
 
 .modal-content {
-  background-color: white;
-  padding: 1.5rem;
-  border-radius: 10px;
+  background: #f7f5ef;
+  border: 1px solid #ffffff;
+  border-radius: 0.75rem;
+  color: #20252b;
+  padding: 2rem;
   text-align: center;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
@@ -112,29 +172,25 @@ button {
   margin-bottom: 1rem;
 }
 
-.modal-close-button {
-  background-color: #3b82f6; /* blue-500 */
-  color: white;
-  padding: 0.5rem 1rem;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
+.modal-time {
+  color: #6b747b;
+  font-size: 1.1rem;
+  margin: -0.35rem 0 1.25rem;
 }
 
-.modal-close-button:hover {
-  background-color: #2563eb; /* darken on hover */
+.modal-close-button {
+  background-color: #f4b942;
 }
 
 .landing-bg {
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background-color: rgb(129, 128, 128);
-  background-image: url("./img/bomb.png");
-  background-size: 20%;
-  background-position-y: -20%;
-  height: 100vh;
+  padding: 1.25rem;
+  background: #20252b url("./img/bomb.png") no-repeat right -5rem top -4rem;
+  background-size: min(28rem, 45vw);
 }
 
 .landing-container {
@@ -142,32 +198,36 @@ button {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background-color: #1f2937b2;
-  color: white;
-  padding: 30px;
-  border: 2px solid black;
-  border-radius: 10px;
+  max-width: 28rem;
+  background: #11161dcc;
+  border: 1px solid #ffffff2b;
+  border-radius: 0.85rem;
+  box-shadow: 0 1.5rem 3rem #00000040;
+  color: #f7f5ef;
+  padding: clamp(2rem, 8vw, 4rem);
+  text-align: center;
 }
 
 .landing-title {
   font-size: 2.5rem;
   font-weight: bold;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
 }
 
 .landing-subtitle {
-  margin-bottom: 1rem;
+  color: #aeb6bf;
+  margin-bottom: 1.5rem;
 }
 
 .landing-buttons {
   display: flex;
   gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
 }
 
 .btn {
-  padding: 0.5rem 1rem;
-  border: none;
-  border-radius: 6px;
+  min-width: 5.5rem;
   color: white;
   cursor: pointer;
   font-weight: bold;
@@ -185,6 +245,21 @@ button {
   background-color: #ef4444; /* Tailwind's red-500 */
 }
 
-.btn:hover {
-  opacity: 0.9;
+@media (max-width: 480px) {
+  .parent {
+    padding-top: 2rem;
+  }
+
+  .game-header {
+    align-items: center;
+  }
+
+  .timer {
+    min-width: 5.5rem;
+    padding: 0.5rem;
+  }
+
+  .timer-value {
+    font-size: 1.45rem;
+  }
 }
