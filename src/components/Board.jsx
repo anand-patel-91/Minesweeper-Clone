@@ -181,20 +181,25 @@ const Board = ({ mineCount, onGameOver, onWin, onChangeDifficulty }) => {
           <h1>Minesweeper</h1>
         </div>
         <div className="game-stats">
-          <div className="stat" aria-label={`${mines - flaggedCount} mines remaining`}>
+          <div
+            className="stat mine-stat"
+            aria-label={`${mines - flaggedCount} mines remaining`}
+          >
             <span className="timer-label">Mines</span>
             <span className="timer-value">{mines - flaggedCount}</span>
           </div>
-          <div className="stat" aria-live="polite">
-            <span className="timer-label">Time</span>
-            <span className="timer-value">
-              {String(Math.floor(elapsedTime / 60)).padStart(2, "0")}:
-              {String(elapsedTime % 60).padStart(2, "0")}
-            </span>
+          <div className="stats-row">
+            <div className="stat" aria-live="polite">
+              <span className="timer-label">Time</span>
+              <span className="timer-value">
+                {String(Math.floor(elapsedTime / 60)).padStart(2, "0")}:
+                {String(elapsedTime % 60).padStart(2, "0")}
+              </span>
+            </div>
+            <button className="reset-button" onClick={freshBoard} type="button">
+              Reset
+            </button>
           </div>
-          <button className="reset-button" onClick={freshBoard} type="button">
-            Reset
-          </button>
           <button
             className="difficulty-button"
             onClick={onChangeDifficulty}
