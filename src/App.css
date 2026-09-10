@@ -53,16 +53,6 @@ h1 {
   text-transform: uppercase;
 }
 
-.timer {
-  min-width: 6.5rem;
-  padding: 0.65rem 0.9rem;
-  border: 1px solid #ffffff2b;
-  border-radius: 0.6rem;
-  background: #11161dcc;
-  box-shadow: 0 0.75rem 2rem #00000026;
-  text-align: right;
-}
-
 .timer-label {
   display: block;
   color: #aeb6bf;
@@ -79,10 +69,41 @@ h1 {
   line-height: 1;
 }
 
+.game-stats {
+  min-width: 0;
+  display: flex;
+  align-items: end;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.stat {
+  min-width: 4.6rem;
+  padding: 0.55rem 0.7rem;
+  border: 1px solid #ffffff2b;
+  border-radius: 0.6rem;
+  background: #11161dcc;
+  text-align: right;
+}
+
+.reset-button {
+  padding: 0.55rem 0.7rem;
+  background: #f4b942;
+  font-size: 0.85rem;
+}
+
+.difficulty-button {
+  white-space: nowrap;
+  padding: 0.55rem 0.7rem;
+  background: #d7c6a5;
+  font-size: 0.85rem;
+}
+
 .board-par {
   display: grid;
   grid-template-rows: repeat(10, 1fr);
   width: min(88vw, 34rem);
+  max-width: 100%;
   aspect-ratio: 1;
   padding: 0.45rem;
   border: 1px solid #ffffff2b;
@@ -121,11 +142,43 @@ h1 {
   background: #d7c6a5;
   color: #28313a;
   cursor: default;
+  animation: reveal-cell 160ms ease-out;
 }
 
 .cell.revealed.bomb {
   background: #d95d50;
   color: #fff;
+}
+
+.cell.number-1 {
+  color: #1769aa;
+}
+
+.cell.number-2 {
+  color: #28753d;
+}
+
+.cell.number-3 {
+  color: #c13e31;
+}
+
+.cell.number-4,
+.cell.number-5,
+.cell.number-6,
+.cell.number-7,
+.cell.number-8 {
+  color: #63448c;
+}
+
+@keyframes reveal-cell {
+  from {
+    opacity: 0.55;
+    transform: scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 button {
@@ -199,6 +252,7 @@ button:hover {
   align-items: center;
   justify-content: center;
   max-width: 28rem;
+  width: min(100%, 28rem);
   background: #11161dcc;
   border: 1px solid #ffffff2b;
   border-radius: 0.85rem;
@@ -252,11 +306,12 @@ button:hover {
 
   .game-header {
     align-items: center;
+    flex-direction: column;
   }
 
-  .timer {
-    min-width: 5.5rem;
-    padding: 0.5rem;
+  .game-stats {
+    width: 100%;
+    justify-content: center;
   }
 
   .timer-value {

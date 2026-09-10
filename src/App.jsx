@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import Board from "./components/Board";
 import LandingPage from "./components/LandingPage";
 import Modal from "./components/Modal"; // We'll create this next
@@ -48,6 +48,7 @@ function App() {
           mineCount={mineCount}
           onGameOver={handleGameOver}
           onWin={handleWin}
+          onChangeDifficulty={() => setStarted(false)}
         />
       )}
       {showModal && (

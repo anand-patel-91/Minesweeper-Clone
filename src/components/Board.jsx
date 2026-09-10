@@ -1,16 +1,12 @@
-import React, { useEffect, useState, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import PropTypes from "prop-types";
 import CreateBoard from "../utils/CreateBoard";
 import Cell from "./Cell";
-import reveale from "../utils/reveale";
+import reveal from "../utils/reveal";
 
-const Board = ({ mineCount, onGameOver, onWin }) => {
+const Board = ({ mineCount, onGameOver, onWin, onChangeDifficulty }) => {
   const BoardSize = 10; // This stays fixed unless you want to make board size dynamic
   const mines = mineCount;
-
-  const clickSound = new Audio("/audio/mine.mp3");
-  const flagSound = new Audio("/audio/flag.mp3");
-  const explosionSound = new Audio("/audio/bomb.mp3");
-  const victorySound = new Audio("/audio/victory.mp3");
 
   const firstClick = useRef({
     status: true,
@@ -23,15 +19,34 @@ const Board = ({ mineCount, onGameOver, onWin }) => {
   const [mineLocation, setMineLocation] = useState([]);
   const [gameOver, setGameOver] = useState(false);
   const [elapsedTime, setElapsedTime] = useState(0);
+  const elapsedTimeRef = useRef(0);
+  const startTimeRef = useRef(Date.now());
+  const sounds = useRef({});
 
   useEffect(() => {
-    if (gameOver) {
-      return undefined;
-    }
+    sounds.current = {
+      click: new Audio("/audio/mine.mp3"),
+      flag: new Audio("/audio/flag.mp3"),
+      explosion: new Audio("/audio/bomb.mp3"),
+      victory: new Audio("/audio/victory.mp3"),
+    };
 
-    const timerId = setInterval(() => {
-      setElapsedTime((currentTime) => currentTime + 1);
-    }, 1000);
+    return () => {
+      Object.values(sounds.current).forEach((sound) => sound.pause());
+    };
+  }, []);
+
+  useEffect(() => {
+    if (gameOver) return undefined;
+
+    const updateTimer = () => {
+      const currentTime = Math.floor((Date.now() - startTimeRef.current) / 1000);
+      elapsedTimeRef.current = currentTime;
+      setElapsedTime(currentTime);
+    };
+
+    updateTimer();
+    const timerId = setInterval(updateTimer, 250);
 
     return () => clearInterval(timerId);
   }, [gameOver]);
@@ -42,6 +57,9 @@ const Board = ({ mineCount, onGameOver, onWin }) => {
     setMineLocation(newBoard.mineLocation);
     setSafe(BoardSize * BoardSize - mines);
     setGameOver(false);
+    startTimeRef.current = Date.now();
+    elapsedTimeRef.current = 0;
+    setElapsedTime(0);
     firstClick.current = {
       status: true,
       row: -1,
@@ -51,27 +69,26 @@ const Board = ({ mineCount, onGameOver, onWin }) => {
 
   useEffect(() => {
     freshBoard();
-  }, []);
-
-  useEffect(() => {
-    if (firstClick.current.row !== -1 && firstClick.current.col !== -1) {
-      revealCell(firstClick.current.row, firstClick.current.col);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [firstClick.current]);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const updateFlag = (e, x, y) => {
     e.preventDefault();
     if (gameOver || !safe || grid[x][y].revealed) {
       return;
     }
-    let newGrid = JSON.parse(JSON.stringify(grid));
-    if (!newGrid[x][y].flagged) {
-      flagSound.currentTime = 0;
-      flagSound.play();
+    if (!grid[x][y].flagged) {
+      sounds.current.flag.currentTime = 0;
+      sounds.current.flag.play();
     }
-    newGrid[x][y].flagged = !newGrid[x][y].flagged;
-    setGrid(newGrid);
+    setGrid((currentGrid) =>
+      currentGrid.map((row, rowIndex) =>
+        rowIndex === x
+          ? row.map((cell, cellIndex) =>
+              cellIndex === y ? { ...cell, flagged: !cell.flagged } : cell,
+            )
+          : row,
+      ),
+    );
   };
 
   const revealCell = (x, y) => {
@@ -79,27 +96,41 @@ const Board = ({ mineCount, onGameOver, onWin }) => {
       return;
     }
 
-    let newGrid = JSON.parse(JSON.stringify(grid));
+    const newGrid = grid.map((row) => row.map((cell) => ({ ...cell })));
 
     if (firstClick.current.status === true && newGrid[x][y].value !== 0) {
-      clickSound.currentTime = 0;
-      clickSound.play();
-      let newBoard = CreateBoard(BoardSize, mines);
-      while (newBoard.board[x][y].value !== 0) {
-        newBoard = CreateBoard(BoardSize, mines);
+      sounds.current.click.currentTime = 0;
+      sounds.current.click.play();
+      const protectedCells = [];
+      for (let rowOffset = -1; rowOffset <= 1; rowOffset++) {
+        for (let colOffset = -1; colOffset <= 1; colOffset++) {
+          const protectedRow = x + rowOffset;
+          const protectedCol = y + colOffset;
+          if (
+            protectedRow >= 0 &&
+            protectedRow < BoardSize &&
+            protectedCol >= 0 &&
+            protectedCol < BoardSize
+          ) {
+            protectedCells.push([protectedRow, protectedCol]);
+          }
+        }
       }
-      setGrid(newBoard.board);
+      const newBoard = CreateBoard(BoardSize, mines, protectedCells);
       setMineLocation(newBoard.mineLocation);
+      const revealedBoard = reveal(newBoard.board, x, y, safe);
+      setGrid(revealedBoard.arr);
+      setSafe(revealedBoard.newSafe);
 
       firstClick.current = {
         status: false,
-        row: x,
-        col: y,
+        row: -1,
+        col: -1,
       };
     } else if (newGrid[x][y].value === -1) {
       // Game Over
-      explosionSound.currentTime = 0;
-      explosionSound.play();
+      sounds.current.explosion.currentTime = 0;
+      sounds.current.explosion.play();
       onGameOver(); // Replaces alert
       setGameOver(true);
       for (let i = 0; i < mineLocation.length; i++) {
@@ -112,16 +143,21 @@ const Board = ({ mineCount, onGameOver, onWin }) => {
         col: -1,
       };
     } else {
-      clickSound.currentTime = 0;
-      clickSound.play();
-      let revealedBoard = reveale(newGrid, x, y, safe);
+      sounds.current.click.currentTime = 0;
+      sounds.current.click.play();
+      let revealedBoard = reveal(newGrid, x, y, safe);
       setGrid(revealedBoard.arr);
       setSafe(revealedBoard.newSafe);
       if (!revealedBoard.newSafe) {
         setGameOver(true);
-        victorySound.currentTime = 0;
-        victorySound.play();
-        onWin(elapsedTime); // Replaces alert
+        const finalTime = Math.floor(
+          (Date.now() - startTimeRef.current) / 1000,
+        );
+        elapsedTimeRef.current = finalTime;
+        setElapsedTime(finalTime);
+        sounds.current.victory.currentTime = 0;
+        sounds.current.victory.play();
+        onWin(finalTime); // Replaces alert
       }
 
       firstClick.current = {
@@ -132,6 +168,11 @@ const Board = ({ mineCount, onGameOver, onWin }) => {
     }
   };
 
+  const flaggedCount = grid.reduce(
+    (count, row) => count + row.filter((cell) => cell.flagged).length,
+    0,
+  );
+
   return (
     <div className="parent">
       <div className="game-header">
@@ -139,12 +180,28 @@ const Board = ({ mineCount, onGameOver, onWin }) => {
           <p className="eyebrow">Classic puzzle</p>
           <h1>Minesweeper</h1>
         </div>
-        <div className="timer" aria-live="polite">
-          <span className="timer-label">Time</span>
-          <span className="timer-value">
-            {String(Math.floor(elapsedTime / 60)).padStart(2, "0")}:
-            {String(elapsedTime % 60).padStart(2, "0")}
-          </span>
+        <div className="game-stats">
+          <div className="stat" aria-label={`${mines - flaggedCount} mines remaining`}>
+            <span className="timer-label">Mines</span>
+            <span className="timer-value">{mines - flaggedCount}</span>
+          </div>
+          <div className="stat" aria-live="polite">
+            <span className="timer-label">Time</span>
+            <span className="timer-value">
+              {String(Math.floor(elapsedTime / 60)).padStart(2, "0")}:
+              {String(elapsedTime % 60).padStart(2, "0")}
+            </span>
+          </div>
+          <button className="reset-button" onClick={freshBoard} type="button">
+            Reset
+          </button>
+          <button
+            className="difficulty-button"
+            onClick={onChangeDifficulty}
+            type="button"
+          >
+            Change difficulty
+          </button>
         </div>
       </div>
       <div className="board-par">
@@ -165,6 +222,13 @@ const Board = ({ mineCount, onGameOver, onWin }) => {
       </div>
     </div>
   );
+};
+
+Board.propTypes = {
+  mineCount: PropTypes.number.isRequired,
+  onChangeDifficulty: PropTypes.func.isRequired,
+  onGameOver: PropTypes.func.isRequired,
+  onWin: PropTypes.func.isRequired,
 };
 
 export default Board;

@@ -11,10 +11,14 @@ const isValid = (x, y, boardSize, board) => {
     return true;
 };
 
-const CreateBoard = (boardSize, bombs) => {
+const CreateBoard = (boardSize, bombs, excludedCells = []) => {
     let board = [];
 
     let mineLocation = [];
+    const excluded = new Set(
+        excludedCells.map(([x, y]) => `${x},${y}`)
+    );
+    const availableCells = [];
 
     for (let x = 0; x < boardSize; x++) {
         let row = [];
@@ -26,20 +30,24 @@ const CreateBoard = (boardSize, bombs) => {
                 y: y,
                 flagged: false,
             });
+            if (!excluded.has(`${x},${y}`)) {
+                availableCells.push([x, y]);
+            }
         }
         board.push(row);
     }
 
-    let bombsCt = bombs;
-    while (bombsCt > 0) {
-        let x = Math.floor(Math.random() * boardSize);
-        let y = Math.floor(Math.random() * boardSize);
+    for (let index = 0; index < bombs; index++) {
+        const randomIndex = Math.floor(
+            Math.random() * (availableCells.length - index)
+        );
+        const selectedIndex = availableCells.length - index - 1;
+        const [x, y] = availableCells[randomIndex];
 
-        if (board[x][y].value === 0) {
-            board[x][y].value = -1;
-            mineLocation.push([x, y]);
-            bombsCt--;
-        }
+        availableCells[randomIndex] = availableCells[selectedIndex];
+        availableCells[selectedIndex] = [x, y];
+        board[x][y].value = -1;
+        mineLocation.push([x, y]);
     }
 
     let delta = [-1, 0, +1];

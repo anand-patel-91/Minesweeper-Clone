@@ -1,4 +1,4 @@
-import React from "react";
+import PropTypes from "prop-types";
 
 const LandingPage = ({ onStart }) => {
   return (
@@ -22,6 +22,10 @@ const LandingPage = ({ onStart }) => {
       </div>
     </div>
   );
+};
+
+LandingPage.propTypes = {
+  onStart: PropTypes.func.isRequired,
 };
 
 export default LandingPage;

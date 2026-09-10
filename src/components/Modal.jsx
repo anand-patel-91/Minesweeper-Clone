@@ -1,4 +1,4 @@
-import React from "react";
+import PropTypes from "prop-types";
 
 const Modal = ({ message, finalTime, formatTime, onRestart }) => {
   return (
@@ -14,6 +14,13 @@ const Modal = ({ message, finalTime, formatTime, onRestart }) => {
       </div>
     </div>
   );
+};
+
+Modal.propTypes = {
+  finalTime: PropTypes.number,
+  formatTime: PropTypes.func.isRequired,
+  message: PropTypes.string.isRequired,
+  onRestart: PropTypes.func.isRequired,
 };
 
 export default Modal;
